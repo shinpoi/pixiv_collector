@@ -1,0 +1,21 @@
+# python
+__pycache__
+*.pyc
+
+# idea
+.idea
+
+# image
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tif
+
+# others
+backup
+temp
+log
+pixiv
+html
