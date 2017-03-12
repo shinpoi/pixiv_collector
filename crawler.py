@@ -17,8 +17,8 @@ import setting
 import predictor
 
 # If used Python2.7, de-command next two col. // Set encode: utf-8
-reload(sys)
-sys.setdefaultencoding('utf8')
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 
 # Parameter
 ID = setting.PIXIV_ID
@@ -475,14 +475,14 @@ class Crawler(object):
                         with open(save_file + 'ne/' + image[0], 'wb') as f:
                             f.write(image[2])
                         logging.debug('wrote image (negative): %s' % image[0])
-                # time.sleep(0.5)
+                time.sleep(0.5)
             else:
                 logging.info('Ignored id: %s' % img_id)
         logging.info('End for write image in %s' % save_file)
 
     def craw(self, id_set=set()):
         # check daily ranking
-        date = '20170210' # self.times
+        date = self.times
         id_set = self.scan_ranking(mode='daily', date=date, id_set=id_set)
         file_name = self.path + 'Daily_Rank_' + date + '/'
         self.crawler(id_set=id_set, save_file=file_name)

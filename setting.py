@@ -36,8 +36,7 @@ SIZE = 133
 
 # Demo Creator
 CREATE_DEMO = False
-ROOT = ''
+ROOT = 'html/'
 PAGE_DIR = 'html/'
-INDEX = 'html/index.html'
 PAGE_TEMPLATE = 'src/template.html'
 
