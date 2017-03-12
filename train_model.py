@@ -28,7 +28,7 @@ logging.basicConfig(level=setting.LOG_LEVEL,
 
 if setting.TO_CONSOLE:
     console = logging.StreamHandler()
-    console.setLevel(setting.CONSOLE_LOG_LEVEL)
+    console.setLevel(setting.LOG_LEVEL)
     formatter = logging.Formatter('[%(levelname)s]  \t%(message)s\t')
     console.setFormatter(formatter)
     logging.getLogger('').addHandler(console)
@@ -38,8 +38,8 @@ if setting.TO_CONSOLE:
 def read_data(mod='train'):
     logging.info('Read %s data Start' % mod)
 
-    path_po = setting.SRC_DIR + mod + '_positive.npy'
-    path_ne = setting.SRC_DIR + mod + '_negative.npy'
+    path_po = setting.DATA_DIR + mod + '_positive.npy'
+    path_ne = setting.DATA_DIR + mod + '_negative.npy'
 
     data_po = np.load(path_po)
     data_ne = np.load(path_ne)
@@ -87,7 +87,7 @@ if setting.GPU:
 print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 n = y_train.shape[0]  # number of train-data
 bc = 50  # number of batch
-for j in range(501):
+for j in range(201):
     print('start loop %d' % j)
 
     # training
