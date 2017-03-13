@@ -2,14 +2,15 @@
 # python 3.7
 
 import os
-import requests
-import json
+import sys
 import time
 import datetime
 import logging
 import re
+import getopt
+import requests
 from bs4 import BeautifulSoup
-import sys
+import json
 import cv2
 import numpy as np
 # local file
@@ -67,7 +68,7 @@ if LOG_TO_CONSOLE:
 
 # Pixiv Crawler
 class Crawler(object):
-    def __init__(self, user, pw, date, save_path):
+    def __init__(self, user, pw, save_path, date):
         self.id = user
         self.pw = pw
         self.uid = ''
@@ -449,7 +450,8 @@ class Crawler(object):
         logging.info('End scan user')
         return id_set
 
-    def crawler(self, id_set, save_file):
+    # Save original image by id-set.
+    def crawler(self, id_set, save_file, classify=True):
         try:
             os.mkdir(save_file)
             os.mkdir(save_file + 'po/')
@@ -466,60 +468,112 @@ class Crawler(object):
             images_p = self.get_images_by_id(img_id)
 
             if images_p:
-                for image in images_p:
-                    if self.classifiter(image[2]):
-                        with open(save_file + 'po/' + image[0], 'wb') as f:
+                # classify = True
+                if classify:
+                    for image in images_p:
+                        if self.classifiter(image[2]):
+                            with open(save_file + 'po/' + image[0], 'wb') as f:
+                                f.write(image[2])
+                                logging.debug('wrote image (positive): %s' % image[0])
+                        else:
+                            with open(save_file + 'ne/' + image[0], 'wb') as f:
+                                f.write(image[2])
+                            logging.debug('wrote image (negative): %s' % image[0])
+                    time.sleep(0.5)
+                # classify = False
+                else:
+                    for image in images_p:
+                        with open(save_file + image[0], 'wb') as f:
                             f.write(image[2])
-                            logging.debug('wrote image (positive): %s' % image[0])
-                    else:
-                        with open(save_file + 'ne/' + image[0], 'wb') as f:
-                            f.write(image[2])
-                        logging.debug('wrote image (negative): %s' % image[0])
-                time.sleep(0.5)
+                            logging.debug('wrote image (no classify): %s' % image[0])
+                    time.sleep(0.5)
             else:
                 logging.info('Ignored id: %s' % img_id)
         logging.info('End for write image in %s' % save_file)
 
-    def craw(self, id_set=set()):
+    def craw_rank(self, id_set=set(), page=4, mode='daily', date='', classify=True):
+        # check page
+        if page < 1 or page > 10:
+            print("Need page>0 and <10")
+            raise ValueError
+
+        if date:
+            day = date
+        else:
+            day = self.times
+
         # check daily ranking
-        date = self.times
-        id_set = self.scan_ranking(mode='daily', date=date, id_set=id_set)
-        file_name = self.path + 'Daily_Rank_' + date + '/'
-        self.crawler(id_set=id_set, save_file=file_name)
+        id_set = self.scan_ranking(mode=mode, date=day, id_set=id_set, page=page)
+        file_name = self.path + 'Daily_Rank_' + day + '/'
+        self.crawler(id_set=id_set, save_file=file_name, classify=classify)
 
-        # check works of artist
-        """
-        uid = '36'
-        id_set = self.scan_artist(uid=uid)
-        file_name = self.path + uid + '_works_' + str(len(id_set)) + 'p/'
-        self.crawler(id_set=id_set, save_file=file_name)
-        """
+        self.check_cookies(self.cookies)
+        logging.info('Mission complete')
 
-        # check bookmarks of user
-        """
-        uid = '1941321'
-        id_list = self.scan_artist(uid=uid, class_='bookmarks')
-        file_name = self.path + uid + '_bookmarks_' + str(len(id_list)) + 'p/'
-        self.crawler(id_set=id_list, save_file=file_name)
-        """
+    def craw_artist(self, uid, mode='works', id_set=set(), classify=False):
+        # check works/bookmarks of artist
+        id_set = self.scan_artist(uid=uid, class_=mode, id_set=id_set)
+        file_name = self.path + uid + '_' + mode + '_' + str(len(id_set)) + 'p/'
+        self.crawler(id_set=id_set, save_file=file_name, classify=classify)
 
         self.check_cookies(self.cookies)
         logging.info('Mission complete')
 
 
-c = Crawler(user=ID, pw=PW, date=DATE, save_path=SAVE_PATH)
-c.craw()
-"""
-try:
-    c.craw()
-except Exception as er:
-    logging.error('Crawler(): Get error: %s' % er)
-    raise ValueError
-"""
-"""
-img_list = os.listdir(path)
-# for img in img_list:
-	data = cv2.imread(img)
-	data = img.resize(data,x)
-	cv2.imwrtie(path + img, data)
-"""
+###########################
+# RUN
+
+opts, args = getopt.getopt(sys.argv[1:], 'p:u:m:d:c:', ['no-classify', 'mode=', 'date=', 'uid=', 'class=', 'page='])
+
+for name, value in opts:
+    print(name, value)
+
+    if name in ('-d', '--date'):
+        DATE = value
+
+    if name in ('-m', '--mode'):
+        if value in ('rank', 'artist'):
+            MODE = value
+        else:
+            print('Bad value of --mode')
+            raise ValueError
+
+    if name in ('-u', '--uid'):
+        UID = value
+
+    if name in ('-c', '--class'):
+        if value in ('works', 'bookmarks', 'daily', 'weekly', 'monthly'):
+            CLASS = value
+        else:
+            print('Bad value of --class')
+            raise ValueError
+
+    if name in ('-p', '--page'):
+        PAGE = value
+
+for ar in args:
+    if ar == "no-classify":
+        classify = False
+
+if 'classify' not in dir():
+    classify = True
+
+if 'MODE' not in dir():
+    MODE = 'rank'
+
+if MODE == 'rank':
+    if 'CLASS' not in dir():
+        CLASS = 'daily'
+    if 'PAGE' not in dir():
+        PAGE = 4
+elif MODE == 'artist':
+    if 'CLASS' not in dir():
+        CLASS = 'works'
+
+print(classify)
+c = Crawler(user=ID, pw=PW, save_path=SAVE_PATH, date=DATE)
+
+if MODE == 'rank':
+    c.craw_rank(page=PAGE, classify=classify, mode=CLASS)
+elif MODE == 'artist':
+    c.craw_artist(uid=UID, classify=classify, mode=CLASS)
