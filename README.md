@@ -18,7 +18,7 @@ Pixiv Collector
 
 ***
 
-<span id='cn_1'> </span>
+<p id='cn_1'> </p>
 ### 1. 说明 & demo
 一个按指定规则扫描pixiv上的图片，并按一定规律自动分类的程序.  
 * 规律：
@@ -31,7 +31,7 @@ Pixiv Collector
 [demo](http://demo.aoi-lucrio.org)  
 （展示了每日排行榜前200张图的分类结果。 展示用，一个月后自行删除）
 
-<span id='cn_2'> </span>
+<p id='cn_2'> </p>
 ### 2. 使用
 
 <span id='cn_2_1'> </span>
