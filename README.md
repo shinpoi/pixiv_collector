@@ -28,7 +28,7 @@ Pixiv Collector
 
 程序由两部分组成：一部分是pixiv爬虫，用来扫描并下载排行榜信息和图片；另一部分是一个基于卷积神经网络（CNN）的分类器，由chainer实现。
 
-[demo](http://demo.aoi-lucrio.org)  
+[demo](http://demo.aoi-lucario.org)  
 （展示了每日排行榜前200张图的分类结果。 展示用，一个月后自行删除）
 
 <p id='cn_2'> </p>
