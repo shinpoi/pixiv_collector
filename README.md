@@ -18,7 +18,7 @@ Pixiv Collector
 
 ***
 
-<span id='cn_1'></span>
+<span id='cn_1'> </span>
 ### 1. 说明 & demo
 一个按指定规则扫描pixiv上的图片，并按一定规律自动分类的程序.  
 * 规律：
@@ -31,10 +31,10 @@ Pixiv Collector
 [demo](http://demo.aoi-lucrio.org)  
 （展示了每日排行榜前200张图的分类结果。 展示用，一个月后自行删除）
 
-<span id='cn_2'></span>
+<span id='cn_2'> </span>
 ### 2. 使用
 
-<span id='cn_2_1'></span>
+<span id='cn_2_1'> </span>
 #### 2.1. 环境配置
 开发和测试的环境为皆Liunx。Windows上理论可以使用，有兴趣可以自行研究。。。  
 （爬虫部分在 *win10x64* 下测试可以正常使用）
@@ -74,7 +74,7 @@ source PixivCollector/bin/active
 pip install numpy opencv-python chainer requests lxml beautifulsoup4
 ```
 
-<span id='cn_2_2'></span>
+<span id='cn_2_2'> </span>
 #### 2.2. Chainer Debug
 还有个麻烦的地方...  
 这个程序使用到了`chainer`的`Links.inceptionBN()`函数，而这个函数在当前版本有bug([issue#1662](https://github.com/pfnet/chainer/pull/1662)).  
@@ -90,7 +90,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 +   def __call__(self, x, test=False):
 ```
 
-<span id='cn_2_3'></span>  
+<span id='cn_2_3'> </span>  
 #### 2.3. 运行
 激动人性的步骤！  
 
@@ -103,7 +103,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 
 程序会扫描并下载昨天（如果你在0:00~12:00使用的话，扫描前天）的日间排行榜前200张图片，分类保存在`./pixiv`目录下.
 
-<span id='cn_2_4'></span>
+<span id='cn_2_4'> </span>
 #### 2.4. 进阶使用
 `crawler.py` 接受长短参数 —— 两种参数写法不同但效果相同。  
 以日期为例：  
@@ -132,7 +132,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 举例，比如我想下载我自己 (uid=1941321) 所有收藏的图片的话，可以输入：  
 输入: `python crawler.py -m artist -u 1941321 --class=bookmarks no-classify`
 
-<span id='cn_3'></span>
+<span id='cn_3'> </span>
 ### 3. 训练自己的网络
 要求：一张显存8G在以上的Nvidia显卡（GTX1070+）.
 
@@ -159,7 +159,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 `python train_model.py`  
 训练完成后新的`cpu_model.npz`会覆盖目录下的原文件.
 
-<span id='cn_4'></span>
+<span id='cn_4'> </span>
 ### 4. 文件结构（开发者向）
 总体结构如图：  
 
@@ -178,14 +178,14 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 　　　└── **template.html**   ----- demo网页展示页面的模板
 
 
-<span id='cn_4_1'></span>
+<span id='cn_4_1'> </span>
 #### 4.1 爬虫
 `setting.py`  
 实装了但没使用的功能：
 * 打分  
 （这个项目最初的目的是分类出我喜欢的图，然后让爬虫在pixiv上随机扫描，并收集我可能喜欢的图，然后给正类评分。但喜欢这个感觉实在是太玄学了，分类效果一直不太理想，所以渐渐做成了现在这样。当然，努力的目标还是让计算机理解我‘喜欢’什么样的图。）
 
-<span id='cn_4_2'></span>
+<span id='cn_4_2'> </span>
 #### 4.2 神经网络
 使用的网络模型为Google Inception v2的简化型. 具体可以查看`model.py`，对CNN有了解的话应该很容易看懂.  
 >**参考这两篇论文:**   
@@ -199,7 +199,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 调试的过程中试着降低样本的尺寸和保存为单色，发现分类效果几乎没变化（甚至还略有提高 <-- 实验次数不多，也可能是偶然）
 于是最终选用了这个尺寸。
 
-<span id='cn_5'></span>
+<span id='cn_5'> </span>
 #### 5. 结尾 & 计划
 第一次做神经网络在图像识别方面的应用，也算是自己第一个大点的程序方面的项目……不成熟的地方有很多，样本也太多时间没好好搜集……  
 以后会慢慢完善的（大概（相信不会坑（真的！  
