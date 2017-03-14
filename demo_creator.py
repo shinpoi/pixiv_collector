@@ -85,7 +85,8 @@ class DemoCreator(object):
 
 
 # test
+"""
 dc = DemoCreator(root=setting.ROOT, image_path='Daily_Rank_20170311/', date='20170311', log_name='Crawler_2017-03-12_19-50.log')
 dc.creat_rank_page()
 dc.update_index()
-
+"""
