@@ -1,6 +1,6 @@
 Pixiv Collector
 =================
-#### [中文版点这里 (Chinese version)](#cn)
+#### [中文版点这里 (Click here to Chinese)](#cn)
 ***
 <p id='jp'></p>
 ## 目次:
@@ -18,12 +18,14 @@ Pixiv Collector
 
 ***
 <p id='jp_1'> </p>
-## 1. 説明 & デモ
+
+## 1. 説明 & デモ  
+
 このプロジェクトは[Pixiv](http://www.pixiv.net/)の画像作品をスキャン、識別、二項分類、まだ保存するのプログラムです.
 
 プログラムは主に２つの部分で構成されています：  
 ひとつはウェブクローラ、Pixiv上で各作品をスキャンと保存するためのプログラムです.  
-もうひとつは畳み込みニューラルネットワーク（Convolutional Neural Networks, 以下CNNと略します）に用いる画像分類器、[Chainer](https://github.com/pfnet/chainer)で書きました.
+もうひとつは[畳み込みニューラルネットワーク](https://ja.wikipedia.org/wiki/%E7%95%B3%E3%81%BF%E8%BE%BC%E3%81%BF%E3%83%8B%E3%83%A5%E3%83%BC%E3%83%A9%E3%83%AB%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF)（Convolutional Neural Networks, 以下CNNと略します）に用いる画像分類器、[Chainer](https://github.com/pfnet/chainer)で書きました.
 
 * 分類ルール：
   * グルプ１： 完成度の高い絵（例えば、綺麗な背景を持つ、彩り豊か、線も綺麗など）
@@ -32,9 +34,11 @@ Pixiv Collector
 
 ——————————————————————————————————————————————————————
 <p id='jp_2'> </p>
+
 ## 2. 使い方
 
 <p id='jp_2_1'> </p>
+
 ### 2.1. 環境構築  
 
 **システム**: 開発とテスト共にLinuxです、論理上Windowsにも使えますか*（クローラ部分は win10x64 でも使えると実証しました）*...Linuxを推奨します   
@@ -87,23 +91,15 @@ pip install numpy opencv-python chainer requests lxml beautifulsoup4
 
 ————————————————————————————————————————  
 <p id='jp_2_2'> </p>
+
 ### 2.2. Chainer Debug
-もうひとつちょっと厄介なことがあります...  
-このプログラムは`chainer`の`Links.inceptionBN()`関数を使っています，でもChainerいまのヴァージョンにこの関数はbug([issue#1662](https://github.com/pfnet/chainer/pull/1662))を含めています.  
-github上の最新ヴァージョンも修復しましたか，pipで公開しているヴァージョンはまだ修復していない，だから自力でchainerのソースコードを編集する必要があります.
-```bash
-gedit PixivCollector/lib/python3.x(Python3のヴァージョンによって違います)/site-packages/chainer/links/connection/inceptionbn.py
-```
 
-```python
--   def __call__(self, x):
--        test = not self.train
-
-+   def __call__(self, x, test=False):
-```
-
-————————————————————————————————————————  
+Chainer v1.22.0 ヴァージョンが[公開](https://twitter.com/ChainerOfficial/status/841530472878358528)しましたので、本節を無視してください.古いヴァージョンを使っている方はヴァージョンがアップしてください:
+`pip install chaienr --upgrade
+`
+————————————————————————————————————————  
 <p id='jp_2_3'> </p>  
+
 ### 2.3.1 実行
 いよいよ実行部分になりました！  
 
@@ -129,14 +125,14 @@ P.S. 文字列に引用符はいらない.
 
 
 * `'rank'`モード:  
-  1. 時間選択: `-d --date` // ８桁の数値を必要、例えば、２０１７年３月１２日のランキングなら、‘20170312’と入力（引用符いらない），デフォルト値は昨日/一昨日.  
-  2. ページ選択: `-p --page` //　1〜１０の整数が必要、１ページの画像idは５０枚， デフォルト値は４.  
-  3. ランキング選択: `-c --class` // 'daily'、'weekly'、'monthly' のいずれは必要、日間、週間、月間ランキングを指定する、デフォルト値は'daily'.  
+   * 時間選択: `-d --date` // ８桁の数値を必要、例えば、２０１７年３月１２日のランキングなら、‘20170312’と入力（引用符いらない），デフォルト値は昨日/一昨日.  
+  * ページ選択: `-p --page` //　1〜１０の整数が必要、１ページの画像idは５０枚， デフォルト値は４.  
+  * ランキング選択: `-c --class` // 'daily'、'weekly'、'monthly' のいずれは必要、日間、週間、月間ランキングを指定する、デフォルト値は'daily'.  
 
 
 * `'artist'`モード:
-  1. uid指定: `-u --uid` // ユーザーのuidが必要、'artist'モードなら必ず入力してください、入力しない場エラーが出ます.
-  2. モード指定#2: `-c --class` // 'works'が'bookmarks' が必要、ユーザーの作品をスキャンするか、ブックマークをスキャンするかを選択する、デフォルト値は'works'.
+  * uid指定: `-u --uid` // ユーザーのuidが必要、'artist'モードなら必ず入力してください、入力しない場エラーが出ます.
+  * モード指定#2: `-c --class` // 'works'が'bookmarks' が必要、ユーザーの作品をスキャンするか、ブックマークをスキャンするかを選択する、デフォルト値は'works'.
 
 #### クローラだけを使う（分類器がいらないの場）：
 
@@ -147,6 +143,7 @@ P.S. 文字列に引用符はいらない.
 
 ——————————————————————————————————————————————————————
 <p id='jp_3'> </p>
+
 ## 3. 自分のネットをトレーニングしよう！
 必要環境：メモリが8G以上のNvidiaグラフィックカード（目安: GTX1070+）  
 （いきなり酷い要求？！  
@@ -179,6 +176,7 @@ cuDNNインストールしたら，chainerを入れなおす:  `(PixivCollector)
 
 ——————————————————————————————————————————————————————
 <p id='jp_4'> </p>
+
 ## 4. プロジェクトの仕組み（開発者向け）
 構造は下記のとうりとなります：  
 
@@ -199,6 +197,7 @@ cuDNNインストールしたら，chainerを入れなおす:  `(PixivCollector)
 
 ————————————————————————————————————————  
 <p id='jp_4_1'> </p>
+
 ### 4.1 クローラ
 `setting.py`  
 実装した、でも使っていない機能：
@@ -207,6 +206,7 @@ cuDNNインストールしたら，chainerを入れなおす:  `(PixivCollector)
 
 ————————————————————————————————————————  
 <p id='jp_4_2'> </p>
+
 ### 4.2 畳み込みニューラルネットワーク
 使うモデルはGoogle Inception v2の簡素化ヴァージョン. モデル定義は`model.py`にあります.  
 >**参考文献:**   
@@ -223,6 +223,7 @@ cuDNNインストールしたら，chainerを入れなおす:  `(PixivCollector)
 
 ——————————————————————————————————————————————————————
 <p id='jp_5'> </p>
+
 ## 5. 最後
 実用にはまだまだです.
 正解率高い（グルプ１と分類される作品は確か皆完成率高い）が、再現率が低い（完成率高い作品はグルプ２の中にもたくさんあります）  
@@ -236,9 +237,10 @@ cuDNNインストールしたら，chainerを入れなおす:  `(PixivCollector)
 ***
 Pixiv Collector
 =================
-#### [日本語はこちらへ (Japanese version)](#jp)
+#### [日本語はこちらへ (Click here to Japanese)](#jp)
 ***
 <p id='cn'></p>
+
 ### 目录:
 
 1. [说明 & demo](#cn_1)
@@ -255,6 +257,7 @@ Pixiv Collector
 ***
 
 <p id='cn_1'> </p>
+
 ### 1. 说明 & demo
 一个按指定规则扫描pixiv上的图片，并按一定规律自动分类的程序.  
 * 规律：
@@ -266,10 +269,12 @@ Pixiv Collector
 
 ————————————————————————————————————————————————————
 <p id='cn_2'> </p>
+
 ### 2. 使用
 
 ——————————————————————————————————————————
 <p id='cn_2_1'> </p>
+
 #### 2.1. 环境配置
 开发和测试的环境为皆Liunx。Windows上理论可以使用，有兴趣可以自行研究。。。  
 （爬虫部分在 *win10x64* 下测试可以正常使用）
@@ -311,23 +316,13 @@ pip install numpy opencv-python chainer requests lxml beautifulsoup4
 
 ——————————————————————————————————————————
 <p id='cn_2_2'> </p>
-#### 2.2. Chainer Debug
-还有个麻烦的地方...  
-这个程序使用到了`chainer`的`Links.inceptionBN()`函数，而这个函数在当前版本有bug([issue#1662](https://github.com/pfnet/chainer/pull/1662)).  
-虽然github上的最新版已经修正了，但是pip的发行版还没有跟上，所以我们需要手动修改一下chainer的代码.
-```bash
-gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/chainer/links/connection/inceptionbn.py
-```
 
-```python
--   def __call__(self, x):
--        test = not self.train
-
-+   def __call__(self, x, test=False):
-```
+#### 2.2. Chainer Debug  
+新版终于发行了，请无视这节。老版本的用户请升级到v1.22.0版（`pip install chainer --upgrade`）
 
 ——————————————————————————————————————————
 <p id='cn_2_3'> </p>  
+
 #### 2.3. 运行
 激动人性的步骤！  
 
@@ -342,6 +337,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 
 ——————————————————————————————————————————
 <p id='cn_2_4'> </p>
+
 #### 2.4. 进阶使用
 `crawler.py` 接受长短参数 —— 两种参数写法不同但效果相同。  
 以日期为例：  
@@ -372,6 +368,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 
 ————————————————————————————————————————————————————
 <p id='cn_3'> </p>
+
 ### 3. 训练自己的网络
 要求：一张显存8G在以上的Nvidia显卡（GTX1070+）.
 
@@ -400,6 +397,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 
 ————————————————————————————————————————————————————
 <p id='cn_4'> </p>
+
 ### 4. 文件结构（开发者向）
 总体结构如图：  
 
@@ -419,6 +417,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 
 
 <p id='cn_4_1'> </p>
+
 #### 4.1 爬虫
 `setting.py`  
 实装了但没使用的功能：
@@ -426,6 +425,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 （这个项目最初的目的是分类出我喜欢的图，然后让爬虫在pixiv上随机扫描，并收集我可能喜欢的图，然后给正类评分。但喜欢这个感觉实在是太玄学了，分类效果一直不太理想，所以渐渐做成了现在这样。当然，努力的目标还是让计算机理解我‘喜欢’什么样的图。）
 
 <p id='cn_4_2'> </p>
+
 #### 4.2 神经网络
 使用的网络模型为Google Inception v2的简化型. 具体可以查看`model.py`，对CNN有了解的话应该很容易看懂.  
 >**参考这两篇论文:**   
@@ -441,6 +441,7 @@ gedit PixivCollector/lib/python3.x(视你的Python版本而定)/site-packages/ch
 
 ————————————————————————————————————————————————————
 <p id='cn_5'> </p>
+
 ### 5. 结尾 & 计划
 第一次做神经网络在图像识别方面的应用，也算是自己第一个大点的程序方面的项目……不成熟的地方有很多，样本也太多时间没好好搜集……  
 以后会慢慢完善的（大概（相信不会坑（真的！  
