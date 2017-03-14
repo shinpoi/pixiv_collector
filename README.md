@@ -46,7 +46,7 @@ Pixiv Collector
 ————————————————————————————————————————  
 **2.1.1 Python3：**  
 Debian: `apt-get install python3 python3-dev python3-all`  
-CentOS: [コンパイルインストール](https://docs.python.org/3/using/unix.html?highlight=install)が必要です， Python3.6.0を例にすれば:    
+CentOS: [コンパイルインストール](https://docs.python.org/3/using/unix.html)が必要です， Python3.6.0を例にすれば:    
 ```bash
 wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tar.xz
 tar xf Python-3.6.0.tar.xz
@@ -165,7 +165,7 @@ cuDNNインストールしたら，chainerを入れなおす:  `(PixivCollector)
 `test*`の中はテストデータ，**トレーニングに影響がない**，分類器の性能を評価するだけ使います，**トレーニングデータと違うデータを**、少しだけ入れいいです（各５０枚を勧め）  
 
 簡単な人物と非人物の識別から，抽象的な'好き'と'嫌い'，どんどん試してください！（でも実際的に、特徴が具体的な方が分類効果がいいです  
-画像の色は分類効果に影響しません，全てのデータはモノクロ画像として解析していますから，理由は[4.2節](#cn_4_2)で説明します。  
+画像の色は分類効果に影響しません，全てのデータはモノクロ画像として解析していますから，理由は[4.2節](#jp_4_2)で説明します。  
 
 #### 3.2 トレーニングデータの前処理：  
 `python init_data.py`
@@ -229,8 +229,6 @@ cuDNNインストールしたら，chainerを入れなおす:  `(PixivCollector)
 
 今の目標は正解率を維持するまま再現率を上がることです.
 遠い目標は当然、最初の目的　——　プログラムに自分はどんなの作品が'好き'を教えることです.
-
-自分の訓練用データ、ネットパラメータの更新など、ここでおけます、ネットの構造が変化しない限り、`cpu_model.npz`をGithubで更新しないようにしています.
 
 以上です.
 
