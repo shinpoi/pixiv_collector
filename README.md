@@ -95,7 +95,8 @@ pip install numpy opencv-python chainer requests lxml beautifulsoup4
 
 ### 2.2. Chainer Debug
 
-Chainer v1.22.0 ヴァージョンが[公開](https://twitter.com/ChainerOfficial/status/841530472878358528)しましたので、本節を無視してください.古いヴァージョンを使っている方はヴァージョンがアップしてください:
+Chainer v1.22.0 ヴァージョンが[公開](https://twitter.com/ChainerOfficial/status/841530472878358528)されましたので、本節を無視してください.  
+古いヴァージョンを使っている方はヴァージョンがアップしてください:  
 `pip install chaienr --upgrade
 `
 ————————————————————————————————————————  
