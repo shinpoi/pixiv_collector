@@ -301,6 +301,7 @@ class Crawler(object):
                     return None
                 img = requests.get(url, headers=headers)
                 img_list.append((name, img_format, img.content))
+                time.sleep(0.5)
             return img_list
 
         return None
