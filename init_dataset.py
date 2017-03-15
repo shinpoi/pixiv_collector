@@ -63,7 +63,7 @@ def reduce_image(filename):
 
 # reduce and save image from src_dir to save_dir.
 def create_training_data(src_dir, save_name=SAVE_DIR):
-    is_image = re.compile('.*(\.jpg|\.gif|\.png|\.bmp)$', re.IGNORECASE)
+    is_image = re.compile('.*(\.jpg|\.gif|\.png|\.bmp|\.jpeg)$', re.IGNORECASE)
     img_list = os.listdir(src_dir)
 
     count_sum = 0
