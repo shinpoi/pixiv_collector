@@ -16,6 +16,7 @@ import numpy as np
 # local file
 import setting
 import predictor
+from demo_creator import DemoCreator, reduce_img
 
 # If used Python2.7, de-command next two col. // Set encode: utf-8
 # reload(sys)
@@ -509,7 +510,7 @@ class Crawler(object):
         self.crawler(id_set=id_set, save_file=file_name, classify=classify)
 
         self.check_cookies(self.cookies)
-        logging.info('Mission complete')
+        logging.info('Crawler Final')
 
     def craw_artist(self, uid, mode='works', id_set=set(), classify=False):
         # check works/bookmarks of artist
@@ -518,7 +519,7 @@ class Crawler(object):
         self.crawler(id_set=id_set, save_file=file_name, classify=classify)
 
         self.check_cookies(self.cookies)
-        logging.info('Mission complete')
+        logging.info('Crawler Final')
 
 
 ###########################
@@ -578,3 +579,19 @@ if MODE == 'rank':
     c.craw_rank(page=PAGE, classify=classify, mode=CLASS)
 elif MODE == 'artist':
     c.craw_artist(uid=UID, classify=classify, mode=CLASS)
+    
+    
+if setting.CREATE_DEMO:
+    logging.info('Create page')
+    dc = DemoCreator(root=setting.ROOT, image_path='Daily_Rank_'+DATE+'/', date=DATE)
+    dc.creat_rank_page()
+    dc.update_index()
+    
+    logging.info('Start reduce image')
+    reduce_img(DATE, '/po/')
+    logging.info('END reduce image (po)')
+    reduce_img(DATE, '/ne/')
+    logging.info('END reduce image (ne)')
+    
+    logging.info('Mission complete')
+    

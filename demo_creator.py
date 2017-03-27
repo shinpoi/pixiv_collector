@@ -6,7 +6,7 @@ import time
 
 
 class DemoCreator(object):
-    def __init__(self, root, image_path, date, log_name):
+    def __init__(self, root, image_path, date, log_name=''):
         self.root = root
         self.template = setting.PAGE_TEMPLATE
         self.page_path = self.root + setting.PAGE_DIR
@@ -74,19 +74,31 @@ class DemoCreator(object):
         page.append(br)
 
         # log link
+        """
         a = soup.new_tag('a', href='log/'+self.log_name)
         a.string = self.date[:4] + '-' + self.date[4:-2] + '-' + self.date[-2:]
         br = soup.new_tag('br')
         log.append(a)
         log.append(br)
-
+        """
         with open(self.root + 'index.html', 'w') as f:
             f.write(str(soup))
 
 
-# test
-"""
-dc = DemoCreator(root=setting.ROOT, image_path='Daily_Rank_20170311/', date='20170311', log_name='Crawler_2017-03-12_19-50.log')
-dc.creat_rank_page()
-dc.update_index()
-"""
+def reduce_img(date, group='/po/'):
+    d = '/var/www/pixiv_demo/pixiv/Daily_Rank_' + date + group
+    pattern = re.compile('([0-9]+_p[0-9]).', re.IGNORECASE)
+    img_list = os.listdir(d)
+    n = 0
+    for img in img_list:
+        name = re.search(pattern, img).group(1)
+        img = cv2.imread(d+img)
+        if img.shape[0] < 400 and img.shape[1] < 400:
+            continue
+        if img.shape[0] > img.shape[1]:
+            img = cv2.resize(img, (round(img.shape[1]*400/img.shape[0]), 400))
+        else:
+            img = cv2.resize(img, (400, round(img.shape[0]*400/img.shape[1])))
+        cv2.imwrite(d+name+'.jpg', img)
+        n += 1
+        # print("%d/%d" % (n, len(img_list)))
