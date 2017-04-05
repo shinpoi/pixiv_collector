@@ -33,8 +33,8 @@ Pixiv Collector
   * グルプ２： 漫画，スケッチ，線画、落書き，ちびチャラ，ラブライブ顔，巨乳，大きな尻，足（しかない）など  
   * 個人趣味でこの二項分類ルールを作りました、自分の分類器を作りたい場、[第３節](#jp_3)を参考にしてください.
 
-デモ: （展示用、三周後(2017.04.05)消します. ここ数日の日間ランキング前２００作の分類結果を乗っでいます）  
-http://demo.aoi-lucario.org 
+デモ: 
+![https://github.com/shinpoi/pixiv_collector/blob/master/demo.jpg](demo.jpg)
 ——————————————————————————————————————————————————————
 <p id='jp_2'> </p>
 
@@ -276,6 +276,8 @@ Pixiv Collector
 
 程序由两部分组成：一部分是pixiv爬虫，用来扫描并下载排行榜信息和图片；另一部分是一个基于卷积神经网络（CNN）的分类器，由chainer实现。
 
+像这样: 
+![https://github.com/shinpoi/pixiv_collector/blob/master/demo.jpg](demo.jpg)
 ————————————————————————————————————————————————————
 <p id='cn_2'> </p>
 
