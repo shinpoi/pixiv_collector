@@ -33,7 +33,8 @@ Pixiv Collector
   * グルプ２： 漫画，スケッチ，線画、落書き，ちびチャラ，ラブライブ顔，巨乳，大きな尻，足（しかない）など  
   * 個人趣味でこの二項分類ルールを作りました、自分の分類器を作りたい場、[第３節](#jp_3)を参考にしてください.
 
-デモ: 
+デモ:  
+[demo-site](http://pc.aoi-lucario.org)  
 ![https://github.com/shinpoi/pixiv_collector/blob/master/demo.jpg](demo.jpg)
 ——————————————————————————————————————————————————————
 <p id='jp_2'> </p>
