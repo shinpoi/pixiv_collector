@@ -88,7 +88,9 @@ class CNN_02(Chain):
             inc5a=L.InceptionBN(768, 320, 192, 288, 192, 288, 'max', 128),
             # AveragePool(7x7, 1)
             # Dropout(40%)
-            out=L.Linear(1024, 2),
+            preout=L.Linear(1024, 64),
+            # ReLu
+            out=L.Linear(64, 2),
             # SoftMax
         )
 
@@ -103,5 +105,6 @@ class CNN_02(Chain):
         h5a = self.inc5a(h4, test=test)
         # print("h5a.shape: %s" % str(h5a.shape))
         h5b = F.dropout(F.average_pooling_2d(h5a, 7, stride=1), ratio=0.4, train=(not test))
-        h6 = F.softmax(self.out(h5b))
-        return h6
+        h6a = F.relu(self.preout(h5b))
+        h6b = F.softmax(self.out(h6a))
+        return h6b
