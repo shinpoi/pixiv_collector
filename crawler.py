@@ -165,20 +165,17 @@ class Crawler(object):
 
         r = requests.get(self.homepage, headers=headers, cookies=cookies)
         soup = BeautifulSoup(r.text, 'lxml')
-        check_id = soup.find('h1', class_='user')
+        check_id = soup.find(text=self.id)
         if not check_id:
             logging.error('Can not get uid from homepage')
             return False
-
-        if check_id.text == self.id:
-            # Set uid
-            uid = soup.find('a', class_='user-link')['href']
-            self.uid = re.search(self.pattern_uid, uid).group(1)
-            new_cookies = self.update_cookies(cookies, r.cookies)
-            self.save_cookies(new_cookies)
-            return new_cookies
-        else:
-            return False
+        
+        # Set uid
+        uid = check_id.parent['href']
+        self.uid = re.search(self.pattern_uid, uid).group(1)
+        new_cookies = self.update_cookies(cookies, r.cookies)
+        self.save_cookies(new_cookies)
+        return new_cookies
 
     # Login and get new cookies. | Success: new cookies ; False: raise ValueError (and break program)
     def login(self):
