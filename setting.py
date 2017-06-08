@@ -36,7 +36,7 @@ SIZE = 133
 
 # Demo Creator
 CREATE_DEMO = False
-ROOT = 'html/'
-PAGE_DIR = 'html/'
+DEMO_ROOT = '/home/shin-u16/document/html_nginx/'
+PAGE_DIR = 'pixiv/'
 PAGE_TEMPLATE = 'src/template.html'
 

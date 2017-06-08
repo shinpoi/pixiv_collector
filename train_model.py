@@ -2,13 +2,12 @@
 # python 2.7
 
 import numpy as np
-from chainer import Chain, Variable, optimizers, serializers, cuda
+from chainer import using_config, no_backprop_mode, Variable, optimizers, serializers, cuda
 import time
 import os
 import logging
 import setting
 import src.model
-import cv2
 
 # DEBUG
 TEST_MODE = False
@@ -87,6 +86,11 @@ if setting.GPU:
 print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 n = y_train.shape[0]  # number of train-data
 bc = 50  # number of batch
+
+MaxAcc = 0
+MaxAcc_loop = 0
+MaxAcc_loss = 0
+
 for j in range(201):
     print('start loop %d' % j)
 
@@ -97,13 +101,18 @@ for j in range(201):
         y = Variable(y_train[sff_index[i: (i + bc) if (i + bc) < n else n], ])
         model.cleargrads()
         loss = model(x, y)
+        logging.debug("loop: %d, loss = %f" % (j, loss.data))
         loss.backward()
         optimizer.update()
 
     # evaluate
-    if j % 40 == 0:
-        xt = Variable(x_test, volatile='on')
-        yt = model.fwd(xt, test=True)
+    if j % 5 == 0:
+        with no_backprop_mode():
+            xt = Variable(x_test)
+            with using_config('train', False):
+                yt = model.fwd(xt)
+        logging.info("loop: %d, loss = %f" % (j, loss.data))
+        model.cleargrads()
         ans = yt.data
         nrow, ncol = ans.shape
         ok = tp = fp = fn = tn = 0
@@ -121,12 +130,19 @@ for j in range(201):
                 else:
                     fp += 1
 
-        logging.info("loop: %d, accuracy: %d/%d = %f" % (j, (tp + tn), nrow, (tp + tn) * 1.0 / nrow))
-        logging.info("loop: %d, precision: %d/%d = %f" % (j, tp, (tp + fp), tp / (tp + fp + 0.1)))
-        logging.info("loop: %d, recall: %d/%d = %f" % (j, tp, (tp + fn), tp / (tp + fn + 0.1)))
+        acc = (tp + tn) * 1.0 / nrow
+        logging.info("loop: %d, accuracy: %d/%d = %f" % (j, (tp + tn), nrow, acc))
+        logging.info("loop: %d, precision: %d/%d = %f" % (j, tp, (tp + fp), tp / (tp + fp + 0.0000001)))
+        logging.info("loop: %d, True Negative Rate: %d/%d = %f" % (j, tn, (fn + tn), tn / (fn + tn + 0.0000001)))
+        logging.info("loop: %d, recall: %d/%d = %f" % (j, tp, (tp + fn), tp / (tp + fn + 0.0000001)))
 
+        if acc > MaxAcc:
+            MaxAcc = acc
+            MaxAcc_loop = j
+            MaxAcc_loss = loss.data
 
 logging.info('Training End')
+logging.info('MaxAcc=%f, loop=%d, loss=%f' % (MaxAcc, MaxAcc_loop, MaxAcc_loss))
 
 # Save Model
 

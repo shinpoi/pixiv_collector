@@ -88,23 +88,20 @@ class CNN_02(Chain):
             inc5a=L.InceptionBN(768, 320, 192, 288, 192, 288, 'max', 128),
             # AveragePool(7x7, 1)
             # Dropout(40%)
-            preout=L.Linear(1024, 64),
-            # ReLu
-            out=L.Linear(64, 2),
+            out=L.Linear(1024, 2),
             # SoftMax
         )
 
     def __call__(self, x, y):
         return F.mean_squared_error(self.fwd(x), y)
 
-    def fwd(self, x, test=False):
-        h1 = F.max_pooling_2d(self.bn1(self.conv1(x), test=test), 3, stride=2)
-        h2 = F.max_pooling_2d(self.bn2(self.conv2b(self.conv2a(h1)), test=test), 3, stride=2)
-        h3 = F.max_pooling_2d(self.inc3b(self.inc3a(h2, test=test), test=test), 3, stride=2)
-        h4 = F.max_pooling_2d(self.inc4b(self.inc4a(h3, test=test), test=test), 3, stride=2)
-        h5a = self.inc5a(h4, test=test)
+    def fwd(self, x):
+        h = F.max_pooling_2d(self.bn1(self.conv1(x)), 3, stride=2)
+        h = F.max_pooling_2d(self.bn2(self.conv2b(self.conv2a(h))), 3, stride=2)
+        h = F.max_pooling_2d(self.inc3b(self.inc3a(h)), 3, stride=2)
+        h = F.max_pooling_2d(self.inc4b(self.inc4a(h)), 3, stride=2)
+        h = self.inc5a(h)
         # print("h5a.shape: %s" % str(h5a.shape))
-        h5b = F.dropout(F.average_pooling_2d(h5a, 7, stride=1), ratio=0.4, train=(not test))
-        h6a = F.relu(self.preout(h5b))
-        h6b = F.softmax(self.out(h6a))
-        return h6b
+        h = F.dropout(F.average_pooling_2d(h, 7, stride=1), ratio=0.4)
+        h = F.softmax(self.out(h))
+        return h
