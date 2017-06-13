@@ -29,6 +29,9 @@ TO_CONSOLE = True
 ########
 # Training (Just for training.)
 GPU = True
+SAVE_MODEL = False
+AUGMENT_RATE = 0.7
+ADAM_RATE = 0.00005
 
 # Don't change this.
 MODEL = src.model.CNN_02

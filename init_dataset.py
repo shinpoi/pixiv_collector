@@ -12,7 +12,8 @@ import time
 import setting
 
 # Parameters
-SIZE = 133
+SIZE = setting.SIZE
+augment_rate = setting.AUGMENT_RATE
 LOG_DIR = setting.LOG_DIR
 DATA_DIR = setting.DATA_DIR
 SAVE_DIR = setting.DATA_DIR
@@ -60,7 +61,7 @@ def flip(img):
 
 
 # return list of targets
-def random_list(length, rate=0.4):
+def random_list(length, rate=augment_rate):
     if length == 0 or length == 1 or rate == 0:
         return []
     n = int(length*rate)
@@ -107,16 +108,16 @@ def create_training_data(src_dir, save_name=SAVE_DIR, test=False):
         list_02 = random_list(count_sum)
         list_02.sort()
 
-        l1 = list_01[0]
+        l1 = list_01[0]  # inverse
         p1 = 0
-        l2 = list_02[0]
+        l2 = list_02[0]  # flip
         p2 = 0
         #############
     else:
         l1 = l2 = p1 = p2 = None
         list_01 = list_02 = []
     count_sum = count_sum + len(list_01) + len(list_02)
-    logging.info('data augmentation by rate=0.4, so sample is %d' % count_sum)
+    logging.info('data augmentation by rate=%f, so sample is %d' % (augment_rate, count_sum))
     data = np.zeros((count_sum, 1, SIZE, SIZE), dtype=np.float32)
     count = 0
     num = 0

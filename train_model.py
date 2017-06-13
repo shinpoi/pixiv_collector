@@ -65,7 +65,7 @@ else:
 
 # Model
 model = src.model.CNN_02()
-optimizer = optimizers.Adam(alpha=0.0001)
+optimizer = optimizers.Adam(alpha=setting.ADAM_RATE)
 optimizer.setup(model)
 
 # Use GPU
@@ -85,7 +85,7 @@ if setting.GPU:
 # Training
 print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
 n = y_train.shape[0]  # number of train-data
-bc = 50  # number of batch
+bc = 60  # number of batch
 
 MaxAcc = 0
 MaxAcc_loop = 0
@@ -145,11 +145,11 @@ logging.info('Training End')
 logging.info('MaxAcc=%f, loop=%d, loss=%f' % (MaxAcc, MaxAcc_loop, MaxAcc_loss))
 
 # Save Model
-
-serializers.save_npz('gpu_model.npz', model)
-model.to_cpu()
-serializers.save_npz('cpu_model.npz', model)
-logging.info('Model Saved')
+if setting.SAVE_MODEL:
+    # serializers.save_npz('gpu_model.npz', model)
+    model.to_cpu()
+    serializers.save_npz('cpu_model.npz', model)
+    logging.info('Model Saved')
 
 # Restore Data (Debug)
 """
