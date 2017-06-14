@@ -54,6 +54,14 @@ def read_data(mod='train'):
 
     return data, target
 
+
+def save_model(modl, num=0, save=setting.SAVE_MODEL):
+    if save:
+        # serializers.save_npz('gpu_model.npz', model)
+        serializers.save_npz('cpu_model_%d.npz' % num, modl)
+        logging.critical('Model Saved as: cpu_model_%d.npz' % num)
+
+
 # Split Training data and Test data
 x_train, y_train = read_data('train')
 
@@ -71,7 +79,7 @@ optimizer.setup(model)
 # Use GPU
 if setting.GPU:
     gpu_device = 0
-    cuda.get_device(gpu_device).use()
+    cuda.get_device_from_id(gpu_device).use()
     model.to_gpu(gpu_device)
     xp = cuda.cupy
 
@@ -90,6 +98,7 @@ bc = 60  # number of batch
 MaxAcc = 0
 MaxAcc_loop = 0
 MaxAcc_loss = 0
+model_num = 0
 
 for j in range(201):
     print('start loop %d' % j)
@@ -140,6 +149,10 @@ for j in range(201):
             MaxAcc = acc
             MaxAcc_loop = j
             MaxAcc_loss = loss.data
+            if loss.data < setting.ACCEPT_LOSS:
+                save_model(model, model_num)
+                model_num += 1
+
 
 logging.info('Training End')
 logging.info('MaxAcc=%f, loop=%d, loss=%f' % (MaxAcc, MaxAcc_loop, MaxAcc_loss))
@@ -148,7 +161,7 @@ logging.info('MaxAcc=%f, loop=%d, loss=%f' % (MaxAcc, MaxAcc_loop, MaxAcc_loss))
 if setting.SAVE_MODEL:
     # serializers.save_npz('gpu_model.npz', model)
     model.to_cpu()
-    serializers.save_npz('cpu_model.npz', model)
+    serializers.save_npz('cpu_model_end.npz', model)
     logging.info('Model Saved')
 
 # Restore Data (Debug)

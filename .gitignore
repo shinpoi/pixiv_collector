@@ -23,3 +23,5 @@ html
 # data
 *.npy
 *.npz
+*.tar
+*.gz

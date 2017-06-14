@@ -49,7 +49,8 @@ logging.info('Init start')
 # Functions
 ##########################
 def inverse_color(img):
-    return 255-img
+    # return 255-img
+    return -img  # img = img - img.means()
 
 
 def random_noise(img):
@@ -82,7 +83,7 @@ def reduce_image(filename):
         img2[0, :int(img.shape[0] * SIZE / img.shape[1]), :SIZE] = cv2.resize(
             img[:, :], (SIZE, int(img.shape[0] * SIZE / img.shape[1])))
     # img2 = img2 - img2.mean()
-    return img2
+    return img2 - img2.mean()
 
 
 # reduce and save image from src_dir to save_dir.
