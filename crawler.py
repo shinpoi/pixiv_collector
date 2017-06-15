@@ -96,16 +96,17 @@ class Crawler(object):
         self.pattern_host = re.compile('https?://(.+?)/')
         self.pattern_tt = re.compile('pixiv.context.token = "([a-zA-Z0-9]+?)";')
         self.pattern_uid = re.compile('id=([0-9]+)')
+        self.pattern_img_name = re.compile('[0-9]+_p[0-9]+')
+        self.img_value = {}
 
         self.cookies = self.load_cookies()
 
     @staticmethod
     # Need bit data of image. | return a bool
-    def classifiter(data):
+    def classifiter(data, f=predictor.EasyInceptionV2()):
         # return True
         data = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), 0)
-        f = predictor.EasyInceptionV2()
-        return f.predict(data)
+        return f.predict(data)[0]
 
     # Load cookies from file. | Success: read cookies ; False: login and get new cookies.
     def load_cookies(self):
@@ -470,7 +471,10 @@ class Crawler(object):
                 # classify = True
                 if classify:
                     for image in images_p:
-                        if self.classifiter(image[2]):
+                        res, rating = self.classifiter(image[2])
+                        img_name = self.pattern_img_name.search(image[0])
+                        self.img_value[img_name] = '[%f, %f]' % (rating[0], rating[1])
+                        if res:
                             with open(save_file + 'po/' + image[0], 'wb') as f:
                                 f.write(image[2])
                                 logging.debug('wrote image (positive): %s' % image[0])
@@ -488,6 +492,9 @@ class Crawler(object):
                     time.sleep(0.5)
             else:
                 logging.info('Ignored id: %s' % img_id)
+        with open(save_file + 'value.json', 'w') as f:
+            json.dump(self.img_value, f)
+            logging.info('rating of images has saved as %s', save_file + 'value.json')
         logging.info('End for write image in %s' % save_file)
 
     def craw_rank(self, id_set=set(), page=4, mode='daily', date='', classify=True):
@@ -591,4 +598,3 @@ if setting.CREATE_DEMO:
     logging.info('END reduce image (ne)')
     
     logging.info('Mission complete')
-    

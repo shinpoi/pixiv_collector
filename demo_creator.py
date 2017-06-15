@@ -4,11 +4,12 @@ import os
 import setting
 import time
 import cv2
+import json
 
 
 # crate demo page by a file.
 class DemoCreator(object):
-    def __init__(self, image_path, date, log_name=''):
+    def __init__(self, image_path, date, log_name='', json_file='value.json'):
         self.root = setting.DEMO_ROOT
         self.template = setting.PAGE_TEMPLATE
         self.page_path = self.root + setting.PAGE_DIR
@@ -17,6 +18,16 @@ class DemoCreator(object):
         self.log_name = log_name
         self.img_url = 'http://www.pixiv.net/member_illust.php?mode=medium&illust_id='
         self.illust_url = 'http://www.pixiv.net/ranking.php?mode=daily&content=illust&date='
+        self.img_name = re.compile('[0-9]+_p[0-9]+')
+        if json_file:
+            try:
+                with open(self.page_path + self.image_path + json_file, 'r') as f:
+                    s = f.read()
+                    self.value = json.loads(s)
+            except FileNotFoundError:
+                self.value = None
+        else:
+            self.value = None
 
     def create_rank_page(self):
         # open and parse template
@@ -43,9 +54,12 @@ class DemoCreator(object):
                     d = soup.new_tag('div', **{'class': 'show'})
                     a = soup.new_tag('a', href=url)
                     p = soup.new_tag('p')
-                    p.string = '[test_%s_001, test_%s_002]' % (x, x)
-                    # if value:
-                    #    pass
+                    if self.value:
+                        # print(img)
+                        name = self.img_name.search(img).group()
+                        p.string = self.value[name]
+                    else:
+                        p.string = '[test_%s_001, test_%s_002]' % (x, x)
                     img = soup.new_tag('img', src='/'+setting.PAGE_DIR+self.image_path+x+img, **{'class': 'demo_image'})
                     a.append(img)
                     d.append(a)
@@ -87,9 +101,6 @@ class DemoCreator(object):
     def load_value(self):
         pass
 
-    def value(self):
-        pass
-
 
 def reduce_img(date, group='/po/', d=''):
     if not d:
@@ -112,6 +123,6 @@ def reduce_img(date, group='/po/', d=''):
 
 # test
 if __name__ == "__main__":
-    t = DemoCreator(image_path='t1/', date='20110101')
+    t = DemoCreator(image_path='./co_test/', date='000')
     t.create_rank_page()
     pass
