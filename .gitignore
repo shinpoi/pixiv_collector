@@ -19,3 +19,10 @@ temp
 log
 pixiv
 html
+test
+
+# data
+*.npy
+*.npz
+*.tar
+*.gz

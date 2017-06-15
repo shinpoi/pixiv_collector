@@ -27,8 +27,12 @@ TO_CONSOLE = True
 
 
 ########
-# Training (Just for training.)
+# Training
 GPU = True
+SAVE_MODEL = True
+AUGMENT_RATE = 0.5
+ADAM_RATE = 0.00005
+ACCEPT_LOSS = 0.9
 
 # Don't change this.
 MODEL = src.model.CNN_02
@@ -36,7 +40,7 @@ SIZE = 133
 
 # Demo Creator
 CREATE_DEMO = False
-ROOT = 'html/'
-PAGE_DIR = 'html/'
+DEMO_ROOT = '/home/shin-u16/document/html_nginx/'
+PAGE_DIR = 'pixiv/'
 PAGE_TEMPLATE = 'src/template.html'
 
