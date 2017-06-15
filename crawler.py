@@ -106,7 +106,7 @@ class Crawler(object):
     def classifiter(data, f=predictor.EasyInceptionV2()):
         # return True
         data = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), 0)
-        return f.predict(data)[0]
+        return f.predict(data)
 
     # Load cookies from file. | Success: read cookies ; False: login and get new cookies.
     def load_cookies(self):
@@ -472,7 +472,7 @@ class Crawler(object):
                 if classify:
                     for image in images_p:
                         res, rating = self.classifiter(image[2])
-                        img_name = self.pattern_img_name.search(image[0])
+                        img_name = self.pattern_img_name.search(image[0]).group()
                         self.img_value[img_name] = '[%f, %f]' % (rating[0], rating[1])
                         if res:
                             with open(save_file + 'po/' + image[0], 'wb') as f:
@@ -555,7 +555,7 @@ for name, value in opts:
             raise ValueError
 
     if name in ('-p', '--page'):
-        PAGE = value
+        PAGE = int(value)
 
 for ar in args:
     if ar == "no-classify":
@@ -587,8 +587,8 @@ elif MODE == 'artist':
     
 if setting.CREATE_DEMO:
     logging.info('Create page')
-    dc = DemoCreator(root=setting.ROOT, image_path='Daily_Rank_'+DATE+'/', date=DATE)
-    dc.creat_rank_page()
+    dc = DemoCreator(image_path='Daily_Rank_'+DATE+'/', date=DATE)
+    dc.create_rank_page()
     dc.update_index()
     
     logging.info('Start reduce image')

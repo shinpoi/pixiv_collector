@@ -104,7 +104,7 @@ class DemoCreator(object):
 
 def reduce_img(date, group='/po/', d=''):
     if not d:
-        d = '/var/www/pixiv_demo/pixiv/Daily_Rank_' + date + group
+        d = setting.DEMO_ROOT + setting.PAGE_DIR + 'Daily_Rank_' + date + group
     pattern = re.compile('([0-9]+_p[0-9]).', re.IGNORECASE)
     img_list = os.listdir(d)
     n = 0
