@@ -27,7 +27,7 @@ ID = setting.PIXIV_ID
 PW = setting.PIXIV_PW
 
 LOG_DIR = sys.path[0] + '/' + setting.LOG_DIR
-SAVE_PATH = sys.path[0] + '/' + setting.CRAWLER_DIR
+SAVE_PATH = setting.CRAWLER_DIR
 LOG_LEVEL = logging.INFO
 LOG_TO_CONSOLE = True
 
