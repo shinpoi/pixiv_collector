@@ -111,6 +111,8 @@ def reduce_img(date, group='/po/', d=''):
     for img in img_list:
         name = re.search(pattern, img).group(1)
         img = cv2.imread(d+img)
+        if not img.endswith(".jpg"):
+            os.remove(d+img)
         if img.shape[0] < 400 and img.shape[1] < 400:
             continue
         if img.shape[0] > img.shape[1]:
