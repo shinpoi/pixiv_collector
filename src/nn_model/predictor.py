@@ -1,38 +1,30 @@
 import numpy as np
-from chainer import Variable, serializers, using_config, no_backprop_mode
-import setting
 import cv2
-# import os
+import conf
+
+from chainer import Variable, serializers, using_config, no_backprop_mode
 
 
-# Must include method predict() <- return a bool
-class EasyInceptionV2():
-    def __init__(self):
-        self.size = setting.SIZE
-        self.model = setting.MODEL()
-        serializers.load_npz('cpu_model.npz', self.model)
+class EasyInceptionV2:
+    def __init__(self, size=None, model=None):
+        self.size = conf.IMG_SIZE if not size else size
+        self.model = conf.MODEL() if not model else model()
+        serializers.load_npz('dataset/cpu_model.npz', self.model)
 
-    # Need np.array type's gray-scale image  | success: reduced image
-    def reduce_image(self, img):
-        img2 = np.zeros((self.size, self.size), dtype=np.float32)
-        if img.shape[0] > img.shape[1]:
-            img2[:, :int(img.shape[1] * self.size / img.shape[0])] = cv2.resize(img, (int(img.shape[1] * self.size / img.shape[0]), self.size))
-        else:
-            img2[:int(img.shape[0] * self.size / img.shape[1]), :] = cv2.resize(img, (self.size, int(img.shape[0] * self.size / img.shape[1])))
-        img2 = img2 - img2.mean()
-        return img2.reshape((1, 1, self.size, self.size))
+    def predict(self, img_arr):
+        """
 
-    # get original image !!
-    def predict(self, img):
+        :param img_arr: <np.array> shape(index, channel, height, width)
+        :return: list of ( group, (score_A, score_B) )
+        """
+        img_arr = np.array(img_arr, dtype=np.float32)
         with no_backprop_mode():
-            xt = Variable(self.reduce_image(img))
+            xt = Variable(img_arr)
             with using_config('train', False):
                 yt = self.model.fwd(xt)
-        ans = yt.data
-        if np.argmax(ans[0]):
-            return False, ans[0]
-        else:
-            return True, ans[0]
+        ans = [(np.argmax(v), v) for v in yt.data]
+        return ans
+
 
 """
 f = EasyInceptionV2()
@@ -45,6 +37,7 @@ if __name__ == "__main__":
     import re
     import json
     from shutil import copyfile
+
     C = EasyInceptionV2()
 
     # read every images in dic and mov these to dic/po and dic/ne. and save value in value.json
@@ -63,7 +56,7 @@ if __name__ == "__main__":
     for file in files:
         if not is_image.match(file):
             continue
-        image = cv2.imread(dic+file, 0)
+        image = cv2.imread(dic + file, 0)
         result, value = C.predict(image)
         print("image: %s, value: (%f, %f)" % (file, value[0], value[1]))
 
@@ -71,19 +64,9 @@ if __name__ == "__main__":
         dictionary[img_name] = '(%f, %f)' % (value[0], value[1])
 
         if result:
-            copyfile(dic+file, dic+'po/'+file)
+            copyfile(dic + file, dic + 'po/' + file)
         else:
             copyfile(dic + file, dic + 'ne/' + file)
 
         with open(dic + 'value.json', 'w') as f:
             json.dump(dictionary, f)
-
-
-
-
-
-
-
-
-
-

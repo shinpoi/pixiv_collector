@@ -1,9 +1,8 @@
 # python
 __pycache__
-*.pyc
-
-# idea
 .idea
+venv
+*.pyc
 
 # image
 *.jpg
@@ -16,7 +15,7 @@ __pycache__
 # others
 backup
 temp
-log
+logs
 pixiv
 html
 test

@@ -1,0 +1,10 @@
+numpy
+requests
+beautifulsoup4
+lxml
+opencv-python
+
+# use gpu:
+# cupy==1.0.2
+
+chainer==2.0.1

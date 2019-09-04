@@ -1,7 +1,9 @@
+# - coding: utf-8 -*-
+
 from bs4 import BeautifulSoup
 import re
 import os
-import setting
+import conf
 import time
 import cv2
 import json
@@ -10,9 +12,9 @@ import json
 # crate demo page by a file.
 class DemoCreator(object):
     def __init__(self, image_path, date, log_name='', json_file='value.json'):
-        self.root = setting.DEMO_ROOT
-        self.template = setting.PAGE_TEMPLATE
-        self.page_path = self.root + setting.PAGE_DIR
+        self.root = conf.DEMO_ROOT
+        self.template = conf.PAGE_TEMPLATE
+        self.page_path = self.root + conf.PAGE_DIR
         self.image_path = image_path
         self.date = date
         self.log_name = log_name
@@ -60,7 +62,7 @@ class DemoCreator(object):
                         p.string = self.value[name]
                     else:
                         p.string = '[test_%s_001, test_%s_002]' % (x, x)
-                    img = soup.new_tag('img', src='/'+setting.PAGE_DIR+self.image_path+x+img, **{'class': 'demo_image'})
+                    img = soup.new_tag('img', src='/' + conf.PAGE_DIR + self.image_path + x + img, **{'class': 'demo_image'})
                     a.append(img)
                     d.append(a)
                     d.append(p)
@@ -102,9 +104,9 @@ class DemoCreator(object):
         pass
 
 
-def reduce_img(date, group='/po/', d=''):
+def resize_img(date, group='/po/', d=''):
     if not d:
-        d = setting.DEMO_ROOT + setting.PAGE_DIR + 'Daily_Rank_' + date + group
+        d = conf.DEMO_ROOT + conf.PAGE_DIR + 'Daily_Rank_' + date + group
     pattern = re.compile('([0-9]+_p[0-9]).', re.IGNORECASE)
     img_list = os.listdir(d)
     n = 0

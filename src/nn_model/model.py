@@ -1,12 +1,15 @@
 from chainer import Chain
 import chainer.functions as F
 import chainer.links as L
-import setting
 
 
-class CNN_01(Chain):
+class Modelv1(Chain):
+    """
+    simple model. just for test.
+    """
+
     def __init__(self):
-        super(CNN_01, self).__init__(
+        super(Modelv1, self).__init__(
             conv1=L.Convolution2D(1, 32, 9, stride=3),
             conv2=L.Convolution2D(32, 64, 5, stride=2),
             conv3=L.Convolution2D(64, 64, 3, stride=1),
@@ -29,10 +32,10 @@ class CNN_01(Chain):
         h5 = F.softmax(self.l5(h4))
         return h5
 
-"""
-class CNN_02_FULL(Chain):
+
+class Modelv2FULL(Chain):
     def __init__(self):
-        super(CNN_02, self).__init__(
+        super(Modelv2FULL, self).__init__(
             conv1=L.Convolution2D(1, 64, 7, stride=2, nobias=True),
             # MaxPool(3x3, 2)
             bn1=L.BatchNormalization(64),
@@ -60,19 +63,18 @@ class CNN_02_FULL(Chain):
         return F.mean_squared_error(self.fwd(x), y)
 
     def fwd(self, x):
-        h1 = F.max_pooling_2d(self.bn1(self.conv1(x)), 3, stride=2)
-        h2 = F.max_pooling_2d(self.bn2(self.conv2b(self.conv2a(h1))), 3, stride=2)
-        h3 = F.max_pooling_2d(self.inc3b(self.inc3a(h2)), 3, stride=2)
-        h4 = F.max_pooling_2d(self.inc4e(self.inc4d(self.inc4c(self.inc4b(self.inc4a(h3))))), 3, stride=2)
-        h5 = F.dropout(F.average_pooling_2d(self.inc5b(self.inc5a(h4)), 7, stride=1), ratio=0.4)
-        h6 = F.softmax(self.out(h5))
-        return h6
-"""
+        h = F.max_pooling_2d(self.bn1(self.conv1(x)), 3, stride=2)
+        h = F.max_pooling_2d(self.bn2(self.conv2b(self.conv2a(h))), 3, stride=2)
+        h = F.max_pooling_2d(self.inc3b(self.inc3a(h)), 3, stride=2)
+        h = F.max_pooling_2d(self.inc4e(self.inc4d(self.inc4c(self.inc4b(self.inc4a(h))))), 3, stride=2)
+        h = F.dropout(F.average_pooling_2d(self.inc5b(self.inc5a(h)), 7, stride=1), ratio=0.4)
+        h = F.softmax(self.out(h))
+        return h
 
 
-class CNN_02(Chain):
+class Modelv2(Chain):
     def __init__(self):
-        super(CNN_02, self).__init__(
+        super(Modelv2, self).__init__(
             conv1=L.Convolution2D(1, 64, 3, stride=1, nobias=True),
             # MaxPool(3x3, 2)
             bn1=L.BatchNormalization(64),
@@ -103,7 +105,6 @@ class CNN_02(Chain):
         h = F.max_pooling_2d(self.inc3b(self.inc3a(h)), 3, stride=2)
         h = F.max_pooling_2d(self.inc4b(self.inc4a(h)), 3, stride=2)
         h = self.inc5a(h)
-        # print("h5a.shape: %s" % str(h5a.shape))
         h = F.dropout(F.average_pooling_2d(h, 7, stride=1), ratio=0.4)
         h = F.softmax(self.out(F.relu(self.preout(h))))
         return h
